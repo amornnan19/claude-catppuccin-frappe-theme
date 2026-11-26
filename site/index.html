@@ -9,18 +9,18 @@
 <meta property="og:title" content="Catppuccin Frappé for the Claude app">
 <meta property="og:description" content="Frappé surfaces, mauve accents and soft colour blobs behind frosted glass. One line to install.">
 <meta property="og:image" content="preview.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23303446'/%3E%3Ccircle cx='12' cy='13' r='7' fill='%23ca9ee6'/%3E%3Ccircle cx='20' cy='19' r='7' fill='%238caaee' fill-opacity='.85'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23292c3c'/%3E%3Ccircle cx='10' cy='16' r='4' fill='%23ca9ee6'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%238caaee'/%3E%3Ccircle cx='22' cy='16' r='4' fill='%23a6d189'/%3E%3C/svg%3E">
 <style>
   :root {
-    --rosewater: #f2d5cf; --flamingo: #eebebe; --pink: #f4b8e4; --mauve: #ca9ee6;
-    --red: #e78284; --maroon: #ea999c; --peach: #ef9f76; --yellow: #e5c890;
-    --green: #a6d189; --teal: #81c8be; --sky: #99d1db; --sapphire: #85c1dc;
-    --blue: #8caaee; --lavender: #babbf1; --text: #c6d0f5; --subtext1: #b5bfe2;
-    --subtext0: #a5adce; --overlay2: #949cbb; --overlay1: #838ba7; --overlay0: #737994;
-    --surface2: #626880; --surface1: #51576d; --surface0: #414559; --base: #303446;
-    --mantle: #292c3c; --crust: #232634;
-    --glass: rgba(48, 52, 70, .58);
-    --line: rgba(198, 208, 245, .10);
+    --pink: #f4b8e4; --mauve: #ca9ee6; --red: #e78284; --maroon: #ea999c;
+    --peach: #ef9f76; --yellow: #e5c890; --green: #a6d189; --teal: #81c8be;
+    --blue: #8caaee; --lavender: #babbf1;
+    --text-strong: #d0d8f7; --text: #c6d0f5; --subtext1: #b5bfe2; --subtext0: #a5adce; --overlay2: #949cbb;
+    --surface1: #51576d; --surface0: #414559; --base: #303446; --mantle: #292c3c; --crust: #232634;
+    --raised: rgba(41, 44, 60, .86);
+    --line: rgba(198, 208, 245, .08);
+    --line-strong: rgba(198, 208, 245, .14);
+    --ease: cubic-bezier(.2, .7, .2, 1);
     --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
     --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
   }
@@ -28,93 +28,124 @@
   html { background: var(--base); color-scheme: dark; scroll-behavior: smooth; }
   body { font-family: var(--sans); color: var(--text); line-height: 1.6; font-size: 17px; min-height: 100vh; -webkit-font-smoothing: antialiased; }
   .scene { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; pointer-events: none; }
-  a { color: var(--mauve); text-underline-offset: 3px; }
+  a { color: var(--mauve); text-underline-offset: 3px; transition: color .16s var(--ease); }
   a:hover { color: var(--pink); }
-  :focus-visible { outline: 2px solid var(--mauve); outline-offset: 3px; border-radius: 6px; }
+  :focus-visible { outline: 2px solid var(--mauve); outline-offset: 2px; border-radius: 8px; }
+  code { font-family: var(--mono); }
 
   .wrap { width: min(1120px, 100% - 48px); margin-inline: auto; }
-  .panel { background: var(--glass); backdrop-filter: blur(28px) saturate(1.1); -webkit-backdrop-filter: blur(28px) saturate(1.1); border: 1px solid var(--line); border-radius: 20px; }
+  .surface { background: var(--raised); border: 1px solid var(--line); border-radius: 16px; }
+  .glass { background: rgba(48, 52, 70, .58); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid var(--line-strong); }
+
+  /* Signature: palette dots */
+  .dots { display: inline-flex; gap: 4px; }
+  .dots i { width: 8px; height: 8px; border-radius: 50%; display: block; }
 
   /* nav */
-  nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
-  .brand { display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 600; font-family: var(--mono); font-size: 15px; }
-  .brand svg { width: 28px; height: 28px; }
-  .gh { display: inline-flex; align-items: center; gap: 8px; color: var(--subtext1); text-decoration: none; font-size: 15px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: rgba(41, 44, 60, .5); }
-  .gh:hover { color: var(--text); border-color: rgba(202, 158, 230, .4); }
-  .gh svg { width: 18px; height: 18px; fill: currentColor; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 24px 0; }
+  .brand { display: flex; align-items: center; gap: 12px; color: var(--text); text-decoration: none; font: 500 15px var(--mono); }
+  .gh { display: inline-flex; align-items: center; gap: 8px; color: var(--subtext1); text-decoration: none; font-size: 15px; padding: 8px 12px; border-radius: 10px; transition: color .16s var(--ease), background-color .16s var(--ease); }
+  .gh:hover { color: var(--text); background: rgba(65, 69, 89, .6); }
+  .gh svg { width: 16px; height: 16px; fill: currentColor; }
 
   /* hero */
-  .hero { padding: 72px 0 40px; display: grid; gap: 28px; justify-items: center; text-align: center; }
-  .eyebrow { font-family: var(--mono); font-size: 13px; color: var(--subtext0); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: rgba(41, 44, 60, .5); }
-  .eyebrow b { color: var(--green); font-weight: 500; }
-  h1 { font-size: clamp(40px, 6.4vw, 76px); line-height: 1.04; letter-spacing: -0.025em; font-weight: 700; max-width: 14ch; color: #d0d8f7; }
+  .hero { padding: 64px 0 0; display: grid; justify-items: center; text-align: center; }
+  .meta { font: 13px var(--mono); color: var(--subtext0); margin-bottom: 24px; }
+  .meta b { color: var(--green); font-weight: 400; }
+  h1 { font-size: clamp(40px, 6.4vw, 76px); line-height: 1.04; letter-spacing: -0.025em; font-weight: 600; max-width: 14ch; color: var(--text-strong); }
   h1 em { font-style: normal; color: var(--mauve); }
-  .lede { font-size: clamp(17px, 2vw, 20px); color: var(--subtext1); max-width: 40em; }
+  .lede { font-size: clamp(17px, 2vw, 20px); color: var(--subtext1); max-width: 40em; margin-top: 24px; }
 
   /* install */
-  .install { width: min(940px, 100%); text-align: left; padding: 8px; }
-  .tabs { display: flex; gap: 4px; padding: 4px; }
-  .tab { flex: 1; font: 500 14px var(--sans); color: var(--subtext0); background: none; border: 0; padding: 9px 12px; border-radius: 12px; cursor: pointer; }
-  .tab[aria-selected="true"] { background: rgba(65, 69, 89, .9); color: var(--text); }
+  .install { width: min(940px, 100%); text-align: left; padding: 8px; border-radius: 20px; margin-top: 40px; }
+  .tabs { display: flex; gap: 4px; }
+  .tab { flex: 1; font: 500 14px var(--sans); color: var(--subtext0); background: none; border: 0; padding: 8px 12px; border-radius: 12px; cursor: pointer; transition: color .16s var(--ease), background-color .16s var(--ease); }
+  .tab[aria-selected="true"] { background: rgba(65, 69, 89, .9); color: var(--text); box-shadow: inset 0 1px 0 rgba(198, 208, 245, .06); }
   .tab:hover { color: var(--text); }
-  .cmd { display: flex; align-items: center; gap: 12px; margin: 6px 4px 4px; padding: 16px 16px 16px 20px; border-radius: 14px; background: rgba(35, 38, 52, .75); border: 1px solid var(--line); }
-  .cmd code { flex: 1; min-width: 0; font: 14px/1.5 var(--mono); color: var(--text); overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  .cmd { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 20px; border-radius: 12px; background: rgba(35, 38, 52, .78); border: 1px solid var(--line); }
+  .install .cmd { margin-top: 8px; }
+  .cmd code { flex: 1; min-width: 0; font-size: 14px; line-height: 24px; color: var(--text); overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
   .cmd code::-webkit-scrollbar { display: none; }
   .cmd .p { color: var(--mauve); }
   .cmd .a { color: var(--green); }
-  .steps { font-size: 15px; color: var(--subtext1); padding: 14px 20px 18px; }
-  .steps b { color: var(--text); font-weight: 600; }
-  .copy { flex: none; font: 500 13px var(--sans); color: var(--base); background: var(--mauve); border: 0; padding: 8px 14px; border-radius: 10px; cursor: pointer; min-width: 74px; }
-  .copy:hover { background: var(--pink); }
-  .copy.done { background: var(--green); }
+  .steps { font-size: 15px; color: var(--subtext1); padding: 12px 12px 8px; }
+  .steps b { color: var(--text); font-weight: 500; }
+  .copy { flex: none; display: inline-flex; align-items: center; gap: 8px; font: 500 13px var(--sans); color: var(--text); background: rgba(65, 69, 89, .9); border: 1px solid var(--line-strong); padding: 8px 12px; border-radius: 8px; cursor: pointer; min-width: 84px; justify-content: center; transition: background-color .16s var(--ease), color .16s var(--ease), transform .12s var(--ease); }
+  .copy:hover { background: var(--surface1); }
+  .copy:active { transform: scale(.97); }
+  .copy svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .copy.primary { background: var(--mauve); color: var(--crust); border-color: transparent; }
+  .copy.primary:hover { background: var(--pink); }
+  .copy.done { color: var(--green); }
+  .copy.primary.done { background: var(--green); color: var(--crust); }
   [hidden] { display: none !important; }
 
-  /* preview */
-  .shot { margin: 56px auto 0; padding: 10px; }
-  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; }
-  .caption { text-align: center; color: var(--overlay2); font-size: 13px; margin-top: 12px; }
+  /* product view, drawn over the real backdrop */
+  .app { margin: 64px auto 0; height: 520px; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 24px 64px rgba(35, 38, 52, .5); }
+  .app-side { position: relative; width: 248px; padding: 56px 20px 20px; border-right: 1px solid var(--line); }
+  .app-side .lights { position: absolute; left: 20px; top: 20px; }
+  .app-side .lights i { width: 12px; height: 12px; }
+  .row { height: 12px; border-radius: 6px; background: rgba(165, 173, 206, .2); margin-bottom: 16px; }
+  .row.on { background: rgba(202, 158, 230, .34); }
+  .app-main { flex: 1; min-width: 0; padding: 40px 64px; display: flex; flex-direction: column; gap: 16px; text-align: left; }
+  .bubble { align-self: flex-end; max-width: 100%; background: rgba(58, 62, 83, .9); border: 1px solid var(--line); padding: 8px 16px; border-radius: 12px; font-size: 16px; }
+  .app-main p { font-size: 16px; line-height: 26px; }
+  .app pre { background: rgba(41, 44, 60, .86); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; font: 14px/24px var(--mono); color: var(--text); overflow-x: auto; scrollbar-width: none; }
+  .k { color: var(--mauve); } .s { color: var(--green); } .n { color: var(--peach); } .f { color: var(--blue); } .c { color: #838ba7; } .pr { color: var(--lavender); }
+  .reply { margin-top: auto; height: 48px; border-radius: 12px; background: rgba(58, 62, 83, .9); border: 1px solid var(--line-strong); display: flex; align-items: center; padding: 0 16px; color: var(--subtext0); font-size: 15px; }
+  .caption { text-align: center; color: var(--overlay2); font-size: 13px; margin-top: 16px; }
 
   /* sections */
   section { padding: 96px 0 0; }
-  h2 { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.15; letter-spacing: -0.02em; color: #d0d8f7; margin-bottom: 14px; }
-  .sub { color: var(--subtext1); max-width: 38em; margin-bottom: 36px; }
+  h2 { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.15; letter-spacing: -0.02em; font-weight: 600; color: var(--text-strong); margin-bottom: 12px; }
+  .sub { color: var(--subtext1); max-width: 38em; margin-bottom: 32px; }
 
-  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .feature { padding: 28px; }
-  .feature h3 { font-size: 19px; margin: 14px 0 8px; color: var(--text); }
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feature { padding: 24px; }
+  .feature.wide { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; gap: 24px 48px; align-items: center; }
+  .feature h3 { font-size: 18px; font-weight: 500; margin: 16px 0 8px; color: var(--text); }
+  .feature.wide h3 { margin-top: 0; }
   .feature p { color: var(--subtext1); font-size: 16px; }
-  .dot { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; }
-  .dot svg { width: 20px; height: 20px; stroke: var(--base); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ico { width: 18px; height: 18px; fill: none; stroke: var(--subtext0); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; display: block; }
+  .strip { display: flex; gap: 8px; }
+  .strip i { width: 32px; height: 32px; border-radius: 50%; display: block; border: 1px solid rgba(255, 255, 255, .06); }
 
-  .palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-  .sw { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 14px; background: rgba(41, 44, 60, .55); border: 1px solid var(--line); cursor: pointer; font: inherit; color: inherit; text-align: left; }
-  .sw:hover { border-color: rgba(202, 158, 230, .35); }
-  .sw i { flex: none; width: 34px; height: 34px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .08); }
-  .sw span { display: grid; line-height: 1.3; }
-  .sw b { font-size: 14px; font-weight: 600; color: var(--text); }
-  .sw small { font: 12.5px var(--mono); color: var(--subtext0); }
+  .palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .sw { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: var(--raised); border: 1px solid var(--line); cursor: pointer; font: inherit; color: inherit; text-align: left; transition: border-color .16s var(--ease), background-color .16s var(--ease); }
+  .sw:hover { border-color: var(--line-strong); background: rgba(48, 52, 70, .92); }
+  .sw i { flex: none; width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .06); }
+  .sw span { display: grid; line-height: 1.35; }
+  .sw b { font-size: 14px; font-weight: 500; color: var(--text); }
+  .sw small { font: 12px var(--mono); color: var(--subtext0); }
   .sw.done small { color: var(--green); }
   .role { font-size: 12px; color: var(--overlay2); }
 
-  .update { padding: 28px; display: grid; gap: 12px; }
-  .update .cmd { margin: 0; }
+  .update { padding: 24px; display: grid; gap: 12px; }
   .note { font-size: 15px; color: var(--subtext0); }
 
   footer { padding: 96px 0 48px; color: var(--overlay2); font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
   footer a { color: var(--subtext1); }
 
+  @media (max-width: 860px) {
+    .features { grid-template-columns: 1fr; }
+    .feature.wide { grid-template-columns: 1fr; }
+    .app-side { display: none; }
+    .app-main { padding: 24px; }
+  }
   @media (max-width: 720px) {
     body { font-size: 16px; }
     .hero { padding-top: 40px; }
-    .features { grid-template-columns: 1fr; }
-    .tab { font-size: 13px; padding: 9px 6px; }
-    .cmd { flex-direction: column; align-items: stretch; padding: 14px; }
-    .cmd code { white-space: normal; word-break: break-all; font-size: 13.5px; }
+    .tab { font-size: 13px; padding: 8px 4px; }
+    .cmd { flex-direction: column; align-items: stretch; padding: 12px; }
+    .cmd code { white-space: normal; word-break: break-all; font-size: 13px; }
     .copy { align-self: flex-end; }
+    .app { height: auto; min-height: 440px; }
+    .app pre { font-size: 12px; line-height: 20px; padding: 12px; }
     section { padding-top: 72px; }
     .gh span { display: none; }
+    .strip i { width: 24px; height: 24px; }
   }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 </style>
 </head>
 <body>
@@ -123,7 +154,7 @@
 <div class="wrap">
   <nav>
     <a class="brand" href="#">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#292c3c"/><circle cx="12.5" cy="13" r="7" fill="#ca9ee6"/><circle cx="19.5" cy="19" r="7" fill="#8caaee" fill-opacity=".85"/><circle cx="20" cy="11" r="4" fill="#f4b8e4" fill-opacity=".8"/></svg>
+      <span class="dots" aria-hidden="true"><i style="background: var(--mauve)"></i><i style="background: var(--blue)"></i><i style="background: var(--green)"></i></span>
       catppuccin-frappe
     </a>
     <a class="gh" href="https://github.com/amornnan19/claude-catppuccin-frappe-theme">
@@ -133,11 +164,11 @@
   </nav>
 
   <header class="hero">
-    <p class="eyebrow">Claude Code mod · <b>v0.1.1</b> · MIT</p>
-    <h1>Catppuccin Frappé, <em>for the Claude app.</em></h1>
+    <p class="meta">Claude Code mod · <b>v0.1.1</b> · MIT</p>
+    <h1>Catppuccin Frappé, <em>for the Claude app</em></h1>
     <p class="lede">Frappé surfaces, mauve accents and soft colour blobs drifting slowly behind frosted glass. One line to install, and every new session opens in it.</p>
 
-    <div class="install panel" id="install">
+    <div class="install glass" id="install">
       <div class="tabs" role="tablist" aria-label="Install method">
         <button class="tab" role="tab" aria-selected="true" aria-controls="m-prompt" id="t-prompt">Claude Code prompt</button>
         <button class="tab" role="tab" aria-selected="false" aria-controls="m-shell" id="t-shell" tabindex="-1">Shell</button>
@@ -145,46 +176,64 @@
       </div>
 
       <div role="tabpanel" id="m-prompt" aria-labelledby="t-prompt">
-        <div class="cmd"><code><span class="p">/plugin</span> install catppuccin-frappe <span class="a">--marketplace</span> amornnan19/claude-catppuccin-frappe-theme</code><button class="copy" data-copy="/plugin install catppuccin-frappe --marketplace amornnan19/claude-catppuccin-frappe-theme">Copy</button></div>
+        <div class="cmd"><code><span class="p">/plugin</span> install catppuccin-frappe <span class="a">--marketplace</span> amornnan19/claude-catppuccin-frappe-theme</code><button class="copy primary" data-copy="/plugin install catppuccin-frappe --marketplace amornnan19/claude-catppuccin-frappe-theme">Copy</button></div>
         <p class="steps">Type it at the prompt of Claude Code in a terminal. Answer <b>y</b> to add the marketplace, then choose the <b>user</b> scope so every session gets it.</p>
       </div>
       <div role="tabpanel" id="m-shell" aria-labelledby="t-shell" hidden>
-        <div class="cmd"><code><span class="p">claude</span> plugin install catppuccin-frappe <span class="a">--marketplace</span> amornnan19/claude-catppuccin-frappe-theme</code><button class="copy" data-copy="claude plugin install catppuccin-frappe --marketplace amornnan19/claude-catppuccin-frappe-theme">Copy</button></div>
+        <div class="cmd"><code><span class="p">claude</span> plugin install catppuccin-frappe <span class="a">--marketplace</span> amornnan19/claude-catppuccin-frappe-theme</code><button class="copy primary" data-copy="claude plugin install catppuccin-frappe --marketplace amornnan19/claude-catppuccin-frappe-theme">Copy</button></div>
         <p class="steps">Run it in any shell. It installs at the <b>user</b> scope; open a new session to see the theme.</p>
       </div>
       <div role="tabpanel" id="m-app" aria-labelledby="t-app" hidden>
-        <div class="cmd"><code>amornnan19/claude-catppuccin-frappe-theme</code><button class="copy" data-copy="amornnan19/claude-catppuccin-frappe-theme">Copy</button></div>
+        <div class="cmd"><code>amornnan19/claude-catppuccin-frappe-theme</code><button class="copy primary" data-copy="amornnan19/claude-catppuccin-frappe-theme">Copy</button></div>
         <p class="steps">Click <b>+</b> next to the prompt box, then <b>Plugins</b> → <b>Add marketplace</b> and paste the line above. Then <b>Add plugin</b> and pick <b>catppuccin-frappe</b>.</p>
       </div>
     </div>
   </header>
 
-  <figure class="shot panel">
-    <img src="preview.png" width="1600" height="900" alt="The Claude app in Catppuccin Frappé: frosted panels and a Frappé-coloured code block over soft mauve, blue and teal colour blobs, with the palette below.">
+  <figure class="app glass" aria-label="Preview of a Claude session in the Frappé look">
+    <div class="app-side" aria-hidden="true">
+      <span class="dots lights"><i style="background: var(--red)"></i><i style="background: var(--yellow)"></i><i style="background: var(--green)"></i></span>
+      <div class="row on" style="width: 80%"></div><div class="row" style="width: 64%"></div><div class="row" style="width: 72%"></div><div class="row" style="width: 56%"></div><div class="row" style="width: 68%"></div>
+    </div>
+    <div class="app-main">
+      <div class="bubble">Paint my sessions in Catppuccin Frappé</div>
+      <p>Done. Surfaces, text and accents now follow the Frappé palette, with soft colour blobs drifting behind <a href="#h-what">frosted panels</a>.</p>
+<pre><span class="c">// one call at session start sets the whole look</span>
+<span class="k">await</span> $.theme.<span class="f">set</span>({
+  <span class="pr">colors</span>: theme,
+  <span class="pr">backdrop</span>: {
+    <span class="pr">scene</span>: <span class="s">'frappe-blobs'</span>,
+    <span class="pr">glass</span>: { <span class="pr">blur</span>: <span class="n">28</span>, <span class="pr">opacity</span>: <span class="n">0.55</span> },
+  },
+})</pre>
+      <div class="reply" aria-hidden="true">Reply…</div>
+    </div>
   </figure>
-  <p class="caption">Illustration of the look, drawn from the mod's own backdrop and palette.</p>
+  <p class="caption">A preview drawn in the page, over the same backdrop the mod paints behind the app</p>
 
   <section aria-labelledby="h-what">
     <h2 id="h-what">What it changes</h2>
     <p class="sub">The mod sets one look at the start of each session. The desktop and mobile apps draw it; the terminal CLI and editors keep their own colours.</p>
     <div class="features">
-      <article class="feature panel">
-        <div class="dot" style="background: var(--mauve)"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H16c3.3 0 6-2.7 6-6 0-4.9-4.5-8.6-10-8.6z"/></svg></div>
-        <h3>The Frappé palette, everywhere</h3>
-        <p>Surfaces from base to surface0, Frappé text, a mauve accent, and red, green and yellow kept for errors, success and warnings. Git colours follow Frappé too.</p>
+      <article class="feature wide surface">
+        <div>
+          <h3>The Frappé palette, everywhere</h3>
+          <p>Surfaces from base to surface0, Frappé text, a mauve accent, and red, green and yellow kept for errors, success and warnings. Git colours follow Frappé too.</p>
+        </div>
+        <div class="strip" aria-hidden="true"><i style="background: var(--mauve)"></i><i style="background: var(--blue)"></i><i style="background: var(--teal)"></i><i style="background: var(--green)"></i><i style="background: var(--yellow)"></i><i style="background: var(--peach)"></i><i style="background: var(--red)"></i><i style="background: var(--pink)"></i></div>
       </article>
-      <article class="feature panel">
-        <div class="dot" style="background: var(--blue)"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="6"/><circle cx="16" cy="15" r="6"/></svg></div>
+      <article class="feature surface">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="6"/><circle cx="15" cy="15" r="6"/></svg>
         <h3>Soft blobs behind frosted glass</h3>
         <p>Six pastel blobs drift behind the conversation over 43 to 67 seconds a loop. The app's panels blur them and lay a base tint on top, so words stay easy to read.</p>
       </article>
-      <article class="feature panel">
-        <div class="dot" style="background: var(--green)"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <article class="feature surface">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
         <h3>Contrast-checked</h3>
-        <p>Text is Frappé text lifted a touch to <code style="font-family:var(--mono);font-size:.92em">#d0d8f7</code>, and cards sit between base and surface0, so the desktop app's own contrast check accepts the whole theme.</p>
+        <p>Text is Frappé text lifted a touch to <code>#d0d8f7</code>, and cards sit between base and surface0, so the desktop app's own contrast check accepts the whole theme.</p>
       </article>
-      <article class="feature panel">
-        <div class="dot" style="background: var(--peach)"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></div>
+      <article class="feature surface">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
         <h3>Dark, calm, and still when asked</h3>
         <p>Frappé is a dark palette, so the look is dark-only. With reduced motion turned on, every blob rests in place and nothing moves.</p>
       </article>
@@ -199,7 +248,7 @@
 
   <section aria-labelledby="h-update">
     <h2 id="h-update">Keeping it up to date</h2>
-    <div class="update panel">
+    <div class="update surface">
       <div class="cmd"><code><span class="p">claude</span> plugin marketplace update catppuccin-frappe</code><button class="copy" data-copy="claude plugin marketplace update catppuccin-frappe">Copy</button></div>
       <div class="cmd"><code><span class="p">claude</span> plugin update catppuccin-frappe@catppuccin-frappe</code><button class="copy" data-copy="claude plugin update catppuccin-frappe@catppuccin-frappe">Copy</button></div>
       <p class="note">Then open a new session. A session that is already open keeps the version it started with.</p>
@@ -208,7 +257,7 @@
 
   <footer>
     <span>MIT licensed · <a href="https://github.com/amornnan19/claude-catppuccin-frappe-theme">Source on GitHub</a></span>
-    <span>Palette by <a href="https://catppuccin.com/palette">Catppuccin</a>. A community mod, not affiliated with Catppuccin or Anthropic.</span>
+    <span>Palette by <a href="https://catppuccin.com/palette">Catppuccin</a>. A community mod, not affiliated with Catppuccin or Anthropic</span>
   </footer>
 </div>
 
