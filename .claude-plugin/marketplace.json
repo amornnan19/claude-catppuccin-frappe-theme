@@ -1,0 +1,5 @@
+{
+  "name": "catppuccin-frappe",
+  "owner": { "name": "amornnan19" },
+  "plugins": [{ "name": "catppuccin-frappe", "source": "./" }]
+}
