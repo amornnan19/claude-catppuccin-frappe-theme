@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs>
+<radialGradient id="mauve" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ca9ee6" stop-opacity="0.42"/><stop offset="0.55" stop-color="#ca9ee6" stop-opacity="0.189"/><stop offset="1" stop-color="#ca9ee6" stop-opacity="0"/></radialGradient>
+<radialGradient id="blue" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#8caaee" stop-opacity="0.38"/><stop offset="0.55" stop-color="#8caaee" stop-opacity="0.171"/><stop offset="1" stop-color="#8caaee" stop-opacity="0"/></radialGradient>
+<radialGradient id="pink" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#f4b8e4" stop-opacity="0.3"/><stop offset="0.55" stop-color="#f4b8e4" stop-opacity="0.135"/><stop offset="1" stop-color="#f4b8e4" stop-opacity="0"/></radialGradient>
+<radialGradient id="teal" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#81c8be" stop-opacity="0.3"/><stop offset="0.55" stop-color="#81c8be" stop-opacity="0.135"/><stop offset="1" stop-color="#81c8be" stop-opacity="0"/></radialGradient>
+<radialGradient id="peach" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ef9f76" stop-opacity="0.26"/><stop offset="0.55" stop-color="#ef9f76" stop-opacity="0.117"/><stop offset="1" stop-color="#ef9f76" stop-opacity="0"/></radialGradient>
+<radialGradient id="lavender" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#babbf1" stop-opacity="0.28"/><stop offset="0.55" stop-color="#babbf1" stop-opacity="0.126"/><stop offset="1" stop-color="#babbf1" stop-opacity="0"/></radialGradient>
+</defs>
+<style>
+  .b { transform-box: fill-box; transform-origin: center; animation-timing-function: ease-in-out; animation-iteration-count: infinite; animation-direction: alternate; }
+  .b1 { animation-name: d1; animation-duration: 47s; }
+  .b2 { animation-name: d2; animation-duration: 53s; }
+  .b3 { animation-name: d3; animation-duration: 61s; }
+  .b4 { animation-name: d4; animation-duration: 43s; }
+  .b5 { animation-name: d5; animation-duration: 57s; }
+  .b6 { animation-name: d6; animation-duration: 67s; }
+  @keyframes d1 { from { transform: translate(0, 0) scale(1); } to { transform: translate(140px, 90px) scale(1.12); } }
+  @keyframes d2 { from { transform: translate(0, 0) scale(1); } to { transform: translate(-160px, 70px) scale(0.92); } }
+  @keyframes d3 { from { transform: translate(0, 0) scale(1); } to { transform: translate(110px, -120px) scale(1.08); } }
+  @keyframes d4 { from { transform: translate(0, 0) scale(1); } to { transform: translate(-90px, -100px) scale(1.1); } }
+  @keyframes d5 { from { transform: translate(0, 0) scale(1); } to { transform: translate(120px, -60px) scale(0.9); } }
+  @keyframes d6 { from { transform: translate(0, 0) scale(1); } to { transform: translate(-130px, 110px) scale(1.06); } }
+  @media (prefers-reduced-motion: reduce) { .b { animation: none; } }
+</style>
+<rect width="1600" height="1000" fill="#303446"/>
+<ellipse class="b b1" cx="230" cy="190" rx="520" ry="420" fill="url(#mauve)"/>
+<ellipse class="b b2" cx="1380" cy="240" rx="560" ry="440" fill="url(#blue)"/>
+<ellipse class="b b3" cx="1220" cy="860" rx="500" ry="400" fill="url(#pink)"/>
+<ellipse class="b b4" cx="300" cy="880" rx="520" ry="380" fill="url(#teal)"/>
+<ellipse class="b b5" cx="820" cy="1040" rx="460" ry="300" fill="url(#peach)"/>
+<ellipse class="b b6" cx="860" cy="-60" rx="480" ry="300" fill="url(#lavender)"/>
+</svg>

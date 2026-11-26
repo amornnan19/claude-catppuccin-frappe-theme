@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catppuccin Frappé for the Claude app</title>
+<meta name="description" content="A Claude Code mod that paints the Claude desktop and mobile apps in Catppuccin Frappé, with soft colour blobs drifting behind frosted glass.">
+<meta name="theme-color" content="#303446">
+<meta property="og:title" content="Catppuccin Frappé for the Claude app">
+<meta property="og:description" content="Frappé surfaces, mauve accents and soft colour blobs behind frosted glass. One line to install.">
+<meta property="og:image" content="preview.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23303446'/%3E%3Ccircle cx='12' cy='13' r='7' fill='%23ca9ee6'/%3E%3Ccircle cx='20' cy='19' r='7' fill='%238caaee' fill-opacity='.85'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --rosewater: #f2d5cf; --flamingo: #eebebe; --pink: #f4b8e4; --mauve: #ca9ee6;
+    --red: #e78284; --maroon: #ea999c; --peach: #ef9f76; --yellow: #e5c890;
+    --green: #a6d189; --teal: #81c8be; --sky: #99d1db; --sapphire: #85c1dc;
+    --blue: #8caaee; --lavender: #babbf1; --text: #c6d0f5; --subtext1: #b5bfe2;
+    --subtext0: #a5adce; --overlay2: #949cbb; --overlay1: #838ba7; --overlay0: #737994;
+    --surface2: #626880; --surface1: #51576d; --surface0: #414559; --base: #303446;
+    --mantle: #292c3c; --crust: #232634;
+    --glass: rgba(48, 52, 70, .58);
+    --line: rgba(198, 208, 245, .10);
+    --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { background: var(--base); color-scheme: dark; scroll-behavior: smooth; }
+  body { font-family: var(--sans); color: var(--text); line-height: 1.6; font-size: 17px; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  .scene { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; pointer-events: none; }
+  a { color: var(--mauve); text-underline-offset: 3px; }
+  a:hover { color: var(--pink); }
+  :focus-visible { outline: 2px solid var(--mauve); outline-offset: 3px; border-radius: 6px; }
+
+  .wrap { width: min(1120px, 100% - 48px); margin-inline: auto; }
+  .panel { background: var(--glass); backdrop-filter: blur(28px) saturate(1.1); -webkit-backdrop-filter: blur(28px) saturate(1.1); border: 1px solid var(--line); border-radius: 20px; }
+
+  /* nav */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 600; font-family: var(--mono); font-size: 15px; }
+  .brand svg { width: 28px; height: 28px; }
+  .gh { display: inline-flex; align-items: center; gap: 8px; color: var(--subtext1); text-decoration: none; font-size: 15px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: rgba(41, 44, 60, .5); }
+  .gh:hover { color: var(--text); border-color: rgba(202, 158, 230, .4); }
+  .gh svg { width: 18px; height: 18px; fill: currentColor; }
+
+  /* hero */
+  .hero { padding: 72px 0 40px; display: grid; gap: 28px; justify-items: center; text-align: center; }
+  .eyebrow { font-family: var(--mono); font-size: 13px; color: var(--subtext0); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: rgba(41, 44, 60, .5); }
+  .eyebrow b { color: var(--green); font-weight: 500; }
+  h1 { font-size: clamp(40px, 6.4vw, 76px); line-height: 1.04; letter-spacing: -0.025em; font-weight: 700; max-width: 14ch; color: #d0d8f7; }
+  h1 em { font-style: normal; color: var(--mauve); }
+  .lede { font-size: clamp(17px, 2vw, 20px); color: var(--subtext1); max-width: 40em; }
+
+  /* install */
+  .install { width: min(940px, 100%); text-align: left; padding: 8px; }
+  .tabs { display: flex; gap: 4px; padding: 4px; }
+  .tab { flex: 1; font: 500 14px var(--sans); color: var(--subtext0); background: none; border: 0; padding: 9px 12px; border-radius: 12px; cursor: pointer; }
+  .tab[aria-selected="true"] { background: rgba(65, 69, 89, .9); color: var(--text); }
+  .tab:hover { color: var(--text); }
+  .cmd { display: flex; align-items: center; gap: 12px; margin: 6px 4px 4px; padding: 16px 16px 16px 20px; border-radius: 14px; background: rgba(35, 38, 52, .75); border: 1px solid var(--line); }
+  .cmd code { flex: 1; min-width: 0; font: 14px/1.5 var(--mono); color: var(--text); overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  .cmd code::-webkit-scrollbar { display: none; }
+  .cmd .p { color: var(--mauve); }
+  .cmd .a { color: var(--green); }
+  .steps { font-size: 15px; color: var(--subtext1); padding: 14px 20px 18px; }
+  .steps b { color: var(--text); font-weight: 600; }
+  .copy { flex: none; font: 500 13px var(--sans); color: var(--base); background: var(--mauve); border: 0; padding: 8px 14px; border-radius: 10px; cursor: pointer; min-width: 74px; }
+  .copy:hover { background: var(--pink); }
+  .copy.done { background: var(--green); }
+  [hidden] { display: none !important; }
+
+  /* preview */
+  .shot { margin: 56px auto 0; padding: 10px; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .caption { text-align: center; color: var(--overlay2); font-size: 13px; margin-top: 12px; }
+
+  /* sections */
+  section { padding: 96px 0 0; }
+  h2 { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.15; letter-spacing: -0.02em; color: #d0d8f7; margin-bottom: 14px; }
+  .sub { color: var(--subtext1); max-width: 38em; margin-bottom: 36px; }
+
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .feature { padding: 28px; }
+  .feature h3 { font-size: 19px; margin: 14px 0 8px; color: var(--text); }
+  .feature p { color: var(--subtext1); font-size: 16px; }
+  .dot { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; }
+  .dot svg { width: 20px; height: 20px; stroke: var(--base); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .sw { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 14px; background: rgba(41, 44, 60, .55); border: 1px solid var(--line); cursor: pointer; font: inherit; color: inherit; text-align: left; }
+  .sw:hover { border-color: rgba(202, 158, 230, .35); }
+  .sw i { flex: none; width: 34px; height: 34px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .08); }
+  .sw span { display: grid; line-height: 1.3; }
+  .sw b { font-size: 14px; font-weight: 600; color: var(--text); }
+  .sw small { font: 12.5px var(--mono); color: var(--subtext0); }
+  .sw.done small { color: var(--green); }
+  .role { font-size: 12px; color: var(--overlay2); }
+
+  .update { padding: 28px; display: grid; gap: 12px; }
+  .update .cmd { margin: 0; }
+  .note { font-size: 15px; color: var(--subtext0); }
+
+  footer { padding: 96px 0 48px; color: var(--overlay2); font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+  footer a { color: var(--subtext1); }
+
+  @media (max-width: 720px) {
+    body { font-size: 16px; }
+    .hero { padding-top: 40px; }
+    .features { grid-template-columns: 1fr; }
+    .tab { font-size: 13px; padding: 9px 6px; }
+    .cmd { flex-direction: column; align-items: stretch; padding: 14px; }
+    .cmd code { white-space: normal; word-break: break-all; font-size: 13.5px; }
+    .copy { align-self: flex-end; }
+    section { padding-top: 72px; }
+    .gh span { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<img class="scene" src="scene.svg" alt="">
+
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#292c3c"/><circle cx="12.5" cy="13" r="7" fill="#ca9ee6"/><circle cx="19.5" cy="19" r="7" fill="#8caaee" fill-opacity=".85"/><circle cx="20" cy="11" r="4" fill="#f4b8e4" fill-opacity=".8"/></svg>
+      catppuccin-frappe
+    </a>
+    <a class="gh" href="https://github.com/amornnan19/claude-catppuccin-frappe-theme">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      <span>View on GitHub</span>
+    </a>
+  </nav>
+
+  <header class="hero">
+    <p class="eyebrow">Claude Code mod · <b>v0.1.1</b> · MIT</p>
+    <h1>Catppuccin Frappé, <em>for the Claude app.</em></h1>
+    <p class="lede">Frappé surfaces, mauve accents and soft colour blobs drifting slowly behind frosted glass. One line to install, and every new session opens in it.</p>
+
+    <div class="install panel" id="install">
+      <div class="tabs" role="tablist" aria-label="Install method">
+        <button class="tab" role="tab" aria-selected="true" aria-controls="m-prompt" id="t-prompt">Claude Code prompt</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="m-shell" id="t-shell" tabindex="-1">Shell</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="m-app" id="t-app" tabindex="-1">Desktop app</button>
+      </div>
+
+      <div role="tabpanel" id="m-prompt" aria-labelledby="t-prompt">
+        <div class="cmd"><code><span class="p">/plugin</span> install catppuccin-frappe <span class="a">--marketplace</span> amornnan19/claude-catppuccin-frappe-theme</code><button class="copy" data-copy="/plugin install catppuccin-frappe --marketplace amornnan19/claude-catppuccin-frappe-theme">Copy</button></div>
+        <p class="steps">Type it at the prompt of Claude Code in a terminal. Answer <b>y</b> to add the marketplace, then choose the <b>user</b> scope so every session gets it.</p>
+      </div>
+      <div role="tabpanel" id="m-shell" aria-labelledby="t-shell" hidden>
+        <div class="cmd"><code><span class="p">claude</span> plugin install catppuccin-frappe <span class="a">--marketplace</span> amornnan19/claude-catppuccin-frappe-theme</code><button class="copy" data-copy="claude plugin install catppuccin-frappe --marketplace amornnan19/claude-catppuccin-frappe-theme">Copy</button></div>
+        <p class="steps">Run it in any shell. It installs at the <b>user</b> scope; open a new session to see the theme.</p>
+      </div>
+      <div role="tabpanel" id="m-app" aria-labelledby="t-app" hidden>
+        <div class="cmd"><code>amornnan19/claude-catppuccin-frappe-theme</code><button class="copy" data-copy="amornnan19/claude-catppuccin-frappe-theme">Copy</button></div>
+        <p class="steps">Click <b>+</b> next to the prompt box, then <b>Plugins</b> → <b>Add marketplace</b> and paste the line above. Then <b>Add plugin</b> and pick <b>catppuccin-frappe</b>.</p>
+      </div>
+    </div>
+  </header>
+
+  <figure class="shot panel">
+    <img src="preview.png" width="1600" height="900" alt="The Claude app in Catppuccin Frappé: frosted panels and a Frappé-coloured code block over soft mauve, blue and teal colour blobs, with the palette below.">
+  </figure>
+  <p class="caption">Illustration of the look, drawn from the mod's own backdrop and palette.</p>
+
+  <section aria-labelledby="h-what">
+    <h2 id="h-what">What it changes</h2>
+    <p class="sub">The mod sets one look at the start of each session. The desktop and mobile apps draw it; the terminal CLI and editors keep their own colours.</p>
+    <div class="features">
+      <article class="feature panel">
+        <div class="dot" style="background: var(--mauve)"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H16c3.3 0 6-2.7 6-6 0-4.9-4.5-8.6-10-8.6z"/></svg></div>
+        <h3>The Frappé palette, everywhere</h3>
+        <p>Surfaces from base to surface0, Frappé text, a mauve accent, and red, green and yellow kept for errors, success and warnings. Git colours follow Frappé too.</p>
+      </article>
+      <article class="feature panel">
+        <div class="dot" style="background: var(--blue)"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="6"/><circle cx="16" cy="15" r="6"/></svg></div>
+        <h3>Soft blobs behind frosted glass</h3>
+        <p>Six pastel blobs drift behind the conversation over 43 to 67 seconds a loop. The app's panels blur them and lay a base tint on top, so words stay easy to read.</p>
+      </article>
+      <article class="feature panel">
+        <div class="dot" style="background: var(--green)"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h3>Contrast-checked</h3>
+        <p>Text is Frappé text lifted a touch to <code style="font-family:var(--mono);font-size:.92em">#d0d8f7</code>, and cards sit between base and surface0, so the desktop app's own contrast check accepts the whole theme.</p>
+      </article>
+      <article class="feature panel">
+        <div class="dot" style="background: var(--peach)"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></div>
+        <h3>Dark, calm, and still when asked</h3>
+        <p>Frappé is a dark palette, so the look is dark-only. With reduced motion turned on, every blob rests in place and nothing moves.</p>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-palette">
+    <h2 id="h-palette">The colours it uses</h2>
+    <p class="sub">Straight from the Catppuccin Frappé palette. Click a swatch to copy its hex.</p>
+    <div class="palette" id="palette"></div>
+  </section>
+
+  <section aria-labelledby="h-update">
+    <h2 id="h-update">Keeping it up to date</h2>
+    <div class="update panel">
+      <div class="cmd"><code><span class="p">claude</span> plugin marketplace update catppuccin-frappe</code><button class="copy" data-copy="claude plugin marketplace update catppuccin-frappe">Copy</button></div>
+      <div class="cmd"><code><span class="p">claude</span> plugin update catppuccin-frappe@catppuccin-frappe</code><button class="copy" data-copy="claude plugin update catppuccin-frappe@catppuccin-frappe">Copy</button></div>
+      <p class="note">Then open a new session. A session that is already open keeps the version it started with.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>MIT licensed · <a href="https://github.com/amornnan19/claude-catppuccin-frappe-theme">Source on GitHub</a></span>
+    <span>Palette by <a href="https://catppuccin.com/palette">Catppuccin</a>. A community mod, not affiliated with Catppuccin or Anthropic.</span>
+  </footer>
+</div>
+
+<script>
+  // Swatches: the colours the theme actually uses, with the role each plays.
+  const swatches = [
+    ['mauve', '#ca9ee6', 'accent · keywords'], ['blue', '#8caaee', 'functions'],
+    ['green', '#a6d189', 'success · strings'], ['yellow', '#e5c890', 'warning · types'],
+    ['peach', '#ef9f76', 'literals'], ['red', '#e78284', 'danger · removed'],
+    ['maroon', '#ea999c', 'closed'], ['pink', '#f4b8e4', 'backdrop'],
+    ['teal', '#81c8be', 'backdrop'], ['lavender', '#babbf1', 'backdrop'],
+    ['text', '#c6d0f5', 'text'], ['subtext1', '#b5bfe2', 'secondary text'],
+    ['subtext0', '#a5adce', 'muted text'], ['surface0', '#414559', 'surfaces'],
+    ['base', '#303446', 'page'], ['mantle', '#292c3c', 'code blocks'],
+  ]
+  const grid = document.getElementById('palette')
+  for (const [name, hex, role] of swatches) {
+    const b = document.createElement('button')
+    b.className = 'sw'
+    b.dataset.copy = hex
+    b.setAttribute('aria-label', `Copy ${name} ${hex}`)
+    b.innerHTML = `<i style="background:${hex}"></i><span><b>${name}</b><small>${hex}</small><span class="role">${role}</span></span>`
+    grid.append(b)
+  }
+
+  // Copy buttons and swatches.
+  document.addEventListener('click', async e => {
+    const el = e.target.closest('[data-copy]')
+    if (!el) return
+    try { await navigator.clipboard.writeText(el.dataset.copy) } catch { return }
+    const label = el.classList.contains('sw') ? el.querySelector('small') : el
+    const before = label.textContent
+    el.classList.add('done')
+    label.textContent = 'Copied'
+    setTimeout(() => { el.classList.remove('done'); label.textContent = before }, 1400)
+  })
+
+  // Install tabs, with arrow-key movement between them.
+  const tabs = [...document.querySelectorAll('.tab')]
+  const select = tab => {
+    for (const t of tabs) {
+      const on = t === tab
+      t.setAttribute('aria-selected', on)
+      t.tabIndex = on ? 0 : -1
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on
+    }
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t))
+    t.addEventListener('keydown', e => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
+      if (!d) return
+      const next = tabs[(i + d + tabs.length) % tabs.length]
+      select(next); next.focus()
+    })
+  })
+</script>
+</body>
+</html>
