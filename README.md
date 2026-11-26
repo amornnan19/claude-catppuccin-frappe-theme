@@ -29,9 +29,14 @@ claude plugin install catppuccin-frappe --marketplace amornnan19/claude-catppucc
 In the desktop app, where `/plugin` does not run: click + next to the prompt box,
 then Plugins, Add marketplace with `amornnan19/claude-catppuccin-frappe-theme`, then Add plugin.
 
-This repository is private: installing needs read access on GitHub and a git
-credential for github.com on the machine (an SSH key, or `gh auth login` then
-`gh auth setup-git`).
+No GitHub account or credentials are needed: the repository is public.
+
+To update to the latest version later:
+
+```bash
+claude plugin marketplace update catppuccin-frappe
+claude plugin update catppuccin-frappe@catppuccin-frappe
+```
 
 ## Notes
 
