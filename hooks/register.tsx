@@ -51,11 +51,9 @@ export const register: Register = on => {
     if (unpainted !== undefined) {
       $.ui.toast(unpainted)
     }
-    const set = await $.theme.set(LOOK)
-
-    if (!set.isDrawn) {
-      $.ui.status(set.reason)
-    }
+    // The look stands even when no desktop or mobile client is attached yet, and
+    // draws once one attaches, so there is nothing to tell the person here.
+    await $.theme.set(LOOK)
 
     return next(e)
   })
