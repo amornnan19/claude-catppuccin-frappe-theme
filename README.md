@@ -1,5 +1,7 @@
 # catppuccin-frappe
 
+**Website:** <https://catppuccin-frappe.amornnan.xyz>
+
 ![Catppuccin Frappé theme preview: frosted panels over soft colour blobs, with the Frappé palette below](assets/preview.png)
 
 <sub>Illustration of the look, not a screenshot of the app.</sub>
