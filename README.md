@@ -1,5 +1,9 @@
 # catppuccin-frappe
 
+![Catppuccin Frappé theme preview: frosted panels over soft colour blobs, with the Frappé palette below](assets/preview.png)
+
+<sub>Illustration of the look, not a screenshot of the app.</sub>
+
 A Claude Code mod that paints the Claude desktop and mobile apps in
 [Catppuccin Frappé](https://catppuccin.com/palette): Frappé surfaces, text and
 accent colours (mauve accent, red/green/yellow status, peach literals, Frappé git
